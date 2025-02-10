@@ -53,6 +53,53 @@
     <a-scene id="mainScene" physics="debug:false;">
       <a-assets timeout="2000"></a-assets>
       <div id="LoadingPage"></div>
+
+       <!-- Caméra avec contrôle personnalisé -->
+       <a-entity id="player" position="0 1.6 0">
+        <a-camera></a-camera>
+    </a-entity>
+    <script>
+      let gamepadIndex = null;
+
+function updateGamepad() {
+    let gamepads = navigator.getGamepads();
+    if (gamepadIndex !== null) {
+        let gamepad = gamepads[gamepadIndex];
+
+        if (gamepad) {
+            let player = document.getElementById("player");
+            let pos = player.getAttribute("position");
+
+            // Stick gauche (Axes 0 = gauche/droite, 1 = avant/arrière)
+            let moveX = gamepad.axes[0] * 0.1;
+            let moveZ = gamepad.axes[1] * 0.1;
+
+            // Mise à jour de la position
+            player.setAttribute("position", {
+                x: pos.x + moveX,
+                y: pos.y,
+                z: pos.z + moveZ
+            });
+        }
+    }
+    requestAnimationFrame(updateGamepad);
+}
+
+window.addEventListener("gamepadconnected", (event) => {
+    console.log("Manette connectée :", event.gamepad);
+    gamepadIndex = event.gamepad.index;
+    updateGamepad();
+});
+
+window.addEventListener("gamepaddisconnected", () => {
+    console.log("Manette déconnectée");
+    gamepadIndex = null;
+});
+    </script>
+
+
+
+
       <!-- camera -->
       <!-- <a-entity
         id="camera"
