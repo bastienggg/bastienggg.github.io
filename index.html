@@ -62,8 +62,27 @@
         rotation="0 0 0"
         wasd-controls=""
         vr-mode-ui="enabled: true"
-        gamepad-controls="enabled: true"
+        gamepad-controls="enabled: true; controller: 0;"
       ></a-entity>
+      <script>
+        document.addEventListener("gamepadconnected", (event) => {
+          const camera = document.querySelector("#camera");
+          const gamepad = navigator.getGamepads()[event.gamepad.index];
+
+          function updateCamera() {
+        const axes = gamepad.axes;
+        const speed = 0.1;
+
+        // Move camera based on joystick input
+        camera.object3D.position.x += axes[0] * speed;
+        camera.object3D.position.z += axes[1] * speed;
+
+        requestAnimationFrame(updateCamera);
+          }
+
+          updateCamera();
+        });
+      </script>
 
       <!-- ambient light -->
       <a-light
